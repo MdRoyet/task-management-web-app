@@ -1,7 +1,25 @@
-import React from 'react';
-import { Search, MessageSquare, Bell, ChevronDown, Calendar } from 'lucide-react';
+import React, { useState } from 'react';
+import { Search, MessageSquare, Bell, ChevronDown, Calendar, LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import api from '../services/api';
 
-export default function Navbar({ user }) {
+export default function Navbar({ user, setUser }) {
+  const [showDropdown, setShowDropdown] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await api.post('/auth/logout');
+      if (setUser) setUser(null);
+      // Hard redirect to home page to clear any stale state
+      window.location.href = '/';
+    } catch (err) {
+      console.error(err);
+      // Fail-safe redirect even if request fails
+      window.location.href = '/';
+    }
+  };
+
   const formatDate = () => {
     const options = { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' };
     return new Date().toLocaleDateString('en-US', options);
@@ -46,15 +64,45 @@ export default function Navbar({ user }) {
           {formatDate()}
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
-          <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: '0.9rem', fontWeight: '600' }}>{user?.name || 'Elisabeth Beck'}</div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Administrator</div>
+        <div style={{ position: 'relative' }}>
+          <div 
+            style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}
+            onClick={() => setShowDropdown(!showDropdown)}
+          >
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ fontSize: '0.9rem', fontWeight: '600' }}>{user?.name || 'Elisabeth Beck'}</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Administrator</div>
+            </div>
+            <div className="nav-avatar" style={{ width: '40px', height: '40px', borderRadius: '12px' }}>
+              {user?.name?.substring(0, 2).toUpperCase() || 'EB'}
+            </div>
+            <ChevronDown size={16} color="var(--text-muted)" />
           </div>
-          <div className="nav-avatar" style={{ width: '40px', height: '40px', borderRadius: '12px' }}>
-            {user?.name?.substring(0, 2).toUpperCase() || 'EB'}
-          </div>
-          <ChevronDown size={16} color="var(--text-muted)" />
+
+          {showDropdown && (
+            <div className="glass-panel" style={{
+              position: 'absolute', top: '120%', right: 0, 
+              padding: '0.5rem', zIndex: 100, display: 'flex', 
+              flexDirection: 'column', gap: '0.25rem', minWidth: '180px',
+              border: '1px solid rgba(255,255,255,0.05)', boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
+            }}>
+              <div 
+                className="nav-item" 
+                style={{ 
+                  padding: '0.75rem 1rem', fontSize: '0.9rem', color: '#EF4444', 
+                  display: 'flex', alignItems: 'center', gap: '10px', borderRadius: '8px',
+                  cursor: 'pointer'
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  console.log("Logout triggered");
+                  handleLogout();
+                }}
+              >
+                <LogOut size={16} /> Sign Out
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </nav>

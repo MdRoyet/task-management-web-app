@@ -6,6 +6,7 @@ const projectController = require('../controllers/projectController');
 const taskController = require('../controllers/taskController');
 const workspaceController = require('../controllers/workspaceController');
 const timeController = require('../controllers/timeController');
+const appointmentController = require('../controllers/appointmentController');
 const authMiddleware = require('../middleware/auth');
 
 router.get('/ping', (req, res) => {
@@ -38,5 +39,9 @@ router.get('/projects/:id', authMiddleware, projectController.getProjectById);
 // Task Routes (Protected)
 router.post('/tasks', authMiddleware, taskController.createTask);
 router.delete('/tasks/:id', authMiddleware, taskController.deleteTask);
+
+// Appointment Routes (Protected)
+router.post('/appointments', authMiddleware, appointmentController.createAppointment);
+router.get('/appointments', authMiddleware, appointmentController.getAppointments);
 
 module.exports = router;

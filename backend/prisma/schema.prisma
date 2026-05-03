@@ -37,6 +37,7 @@ model User {
   updatedAt DateTime @updatedAt
   workspaces Workspace[]
   timeLogs   TimeLog[]
+  appointments Appointment[]
 }
 
 model Workspace {
@@ -59,4 +60,17 @@ model TimeLog {
   task      Task      @relation(fields: [taskId], references: [id])
   userId    Int
   user      User      @relation(fields: [userId], references: [id])
+}
+
+model Appointment {
+  id          Int      @id @default(autoincrement())
+  name        String
+  date        String
+  time        String
+  status      String   @default("Confirmed")
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
 }

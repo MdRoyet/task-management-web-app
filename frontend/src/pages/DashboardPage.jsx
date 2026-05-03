@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   MoreHorizontal, Plus, ChevronRight, 
   TrendingUp, ArrowUpRight,
   Filter, SortAsc, Layout, List, Calendar as CalendarIcon,
-  ClipboardList, Users
+  ClipboardList, Users as UsersIcon
 } from 'lucide-react';
+import api from '../services/api';
+import AppointmentModal from '../components/AppointmentModal';
 
 const AppointmentCard = ({ name, time, date, status, desc }) => (
   <div className="glass-panel" style={{ padding: '1.25rem', marginBottom: '1rem', border: '1px solid rgba(255,255,255,0.03)' }}>
@@ -86,6 +88,22 @@ const TaskCard = ({ date, title, desc, priority, tags, avatar }) => (
 );
 
 export default function DashboardPage() {
+  const [appointments, setAppointments] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    fetchAppointments();
+  }, []);
+
+  const fetchAppointments = async () => {
+    try {
+      const res = await api.get('/appointments');
+      setAppointments(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr 240px', gap: '2rem', minHeight: '450px' }}>
@@ -93,16 +111,36 @@ export default function DashboardPage() {
         <div className="glass-panel" style={{ padding: '2rem', display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
             <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>Appointments overview</h2>
-            <button style={{ width: '32px', height: '32px', background: 'var(--primary)', border: 'none', borderRadius: '8px', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <button 
+              onClick={() => {
+                console.log("Opening Appointment Modal...");
+                setIsModalOpen(true);
+              }}
+              style={{ width: '32px', height: '32px', background: 'var(--primary)', border: 'none', borderRadius: '8px', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+            >
               <Plus size={18} />
             </button>
           </div>
           
-          <AppointmentCard name="John Doe" time="10:30 AM" date="14 Jan" status="Confirmed" desc="Routine health assessment with Dr. Smith to ensure overall wellness." />
-          <AppointmentCard name="Jane Smith" time="3:15 PM" date="14 Jan" status="Pending" desc="Review treatment progress for knee injury and adjust therapy as needed." />
-          <AppointmentCard name="Michael Johnson" time="11:45 AM" date="15 Jan" status="Confirmed" desc="Follow-up on recent surgery results." />
+          <div style={{ overflowY: 'auto', flex: 1, maxHeight: '350px', paddingRight: '0.5rem' }}>
+            {appointments.map(apt => (
+              <AppointmentCard 
+                key={apt.id}
+                name={apt.name} 
+                time={apt.time} 
+                date={apt.date} 
+                status={apt.status} 
+                desc={apt.description} 
+              />
+            ))}
+            {appointments.length === 0 && (
+              <div style={{ textAlign: 'center', color: 'var(--text-muted)', marginTop: '2rem' }}>
+                No appointments yet.
+              </div>
+            )}
+          </div>
 
-          <div style={{ marginTop: 'auto', textAlign: 'center' }}>
+          <div style={{ marginTop: 'auto', textAlign: 'center', paddingTop: '1rem' }}>
             <button style={{ background: 'transparent', border: 'none', color: 'var(--primary)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '4px', margin: '0 auto' }}>
               See all appointments <ChevronRight size={16} />
             </button>
@@ -151,9 +189,9 @@ export default function DashboardPage() {
 
         {/* Stats Column (Right Side Floating) */}
         <div style={{ position: 'relative' }}>
-          <StatCard title="Appointments" value="78" change="4" icon={CalendarIcon} offset={{ top: '0px', right: '0px', zIndex: 3 }} />
+          <StatCard title="Appointments" value={appointments.length} change="4" icon={CalendarIcon} offset={{ top: '0px', right: '0px', zIndex: 3 }} />
           <StatCard title="Tasks" value="235" change="12" icon={ClipboardList} offset={{ top: '160px', right: '-20px', zIndex: 2 }} />
-          <StatCard title="Patients" value="78" change="3" icon={Users} offset={{ top: '320px', right: '0px', zIndex: 1 }} />
+          <StatCard title="Patients" value="78" change="3" icon={UsersIcon} offset={{ top: '320px', right: '0px', zIndex: 1 }} />
         </div>
       </div>
 
@@ -213,6 +251,12 @@ export default function DashboardPage() {
            </div>
         </div>
       </div>
+
+      <AppointmentModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        onCreated={fetchAppointments} 
+      />
     </div>
   );
 }
