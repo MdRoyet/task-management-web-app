@@ -5,6 +5,7 @@ const authController = require('../controllers/authController');
 const projectController = require('../controllers/projectController');
 const taskController = require('../controllers/taskController');
 const workspaceController = require('../controllers/workspaceController');
+const timeController = require('../controllers/timeController');
 const authMiddleware = require('../middleware/auth');
 
 router.get('/ping', (req, res) => {
@@ -22,6 +23,12 @@ router.post('/workspaces', authMiddleware, workspaceController.createWorkspace);
 router.get('/workspaces', authMiddleware, workspaceController.getWorkspaces);
 router.put('/workspaces/:id', authMiddleware, workspaceController.updateWorkspace);
 router.get('/workspaces/:id/projects', authMiddleware, workspaceController.getWorkspaceProjects);
+
+// Time Routes
+router.post('/time/start', authMiddleware, timeController.startTimer);
+router.put('/time/stop/:id', authMiddleware, timeController.stopTimer);
+router.get('/time/logs', authMiddleware, timeController.getTimeLogs);
+router.get('/time/active', authMiddleware, timeController.getActiveTimer);
 
 // Project Routes (Protected)
 router.post('/projects', authMiddleware, projectController.createProject);

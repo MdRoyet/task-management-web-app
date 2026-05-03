@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import WorkspaceModal from './WorkspaceModal';
+import TimeTrackerModal from './TimeTrackerModal';
 import api from '../services/api';
 
 const NavItem = ({ icon: Icon, label, active, onClick }) => (
@@ -30,6 +31,7 @@ export default function Sidebar() {
   const [workspaces, setWorkspaces] = useState([]);
   const [activeWorkspace, setActiveWorkspace] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isTimeModalOpen, setIsTimeModalOpen] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
@@ -149,6 +151,12 @@ export default function Sidebar() {
           <NavItem icon={Users} label="Client" />
           <NavItem icon={Briefcase} label="Projects" active={isBoard} />
           <NavItem icon={CheckSquare} label="Tasks" />
+          <NavItem 
+            icon={Clock} 
+            label="Time Tracking" 
+            active={isTimeModalOpen} 
+            onClick={() => setIsTimeModalOpen(true)} 
+          />
           <NavItem icon={UserPlus} label="Invite Team" />
         </div>
 
@@ -157,10 +165,20 @@ export default function Sidebar() {
           <NavItem icon={FileText} label="Invoices" />
           <NavItem icon={Send} label="Proposals" />
           <NavItem icon={FileText} label="Contracts" />
-          <NavItem icon={Clock} label="Time Tracking" />
           <NavItem icon={BookOpen} label="Services" />
         </div>
       </nav>
+
+      <WorkspaceModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        onWorkspaceCreated={handleWorkspaceCreated}
+      />
+
+      <TimeTrackerModal 
+        isOpen={isTimeModalOpen}
+        onClose={() => setIsTimeModalOpen(false)}
+      />
     </aside>
   );
 }
