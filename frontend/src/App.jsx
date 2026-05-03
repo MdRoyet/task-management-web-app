@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import BoardPage from './pages/BoardPage';
+import HomePage from './pages/HomePage';
 import Layout from './components/Layout';
 import api from './services/api';
 
@@ -33,11 +34,15 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route 
-          path="/login" 
-          element={!user ? <LoginPage setUser={setUser} /> : <Navigate to="/" />} 
+          path="/" 
+          element={!user ? <HomePage /> : <Navigate to="/dashboard" />} 
         />
         <Route 
-          path="/" 
+          path="/login" 
+          element={!user ? <LoginPage setUser={setUser} /> : <Navigate to="/dashboard" />} 
+        />
+        <Route 
+          path="/dashboard" 
           element={user ? <Layout user={user} setUser={setUser}><DashboardPage user={user} setUser={setUser} /></Layout> : <Navigate to="/login" />} 
         />
         <Route 

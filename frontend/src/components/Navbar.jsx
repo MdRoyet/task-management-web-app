@@ -1,76 +1,60 @@
-import React, { useState } from 'react';
-import { Search, FileText, Bell, LogOut, Hexagon } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import api from '../services/api';
+import React from 'react';
+import { Search, MessageSquare, Bell, ChevronDown, Calendar } from 'lucide-react';
 
-export default function Navbar({ user, setUser }) {
-  const [showDropdown, setShowDropdown] = useState(false);
-  const navigate = useNavigate();
-
-  const handleLogout = async () => {
-    try {
-      await api.post('/auth/logout');
-      if (setUser) setUser(null);
-      navigate('/login');
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const getInitials = (name) => {
-    if (!name) return 'U';
-    return name.substring(0, 2).toUpperCase();
+export default function Navbar({ user }) {
+  const formatDate = () => {
+    const options = { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' };
+    return new Date().toLocaleDateString('en-US', options);
   };
 
   return (
-    <nav className="top-navbar">
-      <div className="navbar-brand">
-        <div className="navbar-brand-icon">
-          <Hexagon size={16} color="white" fill="white" />
+    <nav className="top-navbar" style={{ padding: '0 3rem' }}>
+      <div className="navbar-search" style={{ flex: '0 1 350px' }}>
+        <Search size={18} />
+        <input 
+          type="text" 
+          placeholder="Search" 
+          style={{ 
+            background: 'rgba(255,255,255,0.03)', 
+            borderRadius: '12px', 
+            padding: '0.75rem 1rem 0.75rem 2.75rem' 
+          }} 
+        />
+      </div>
+
+      <div className="navbar-actions" style={{ gap: '2rem' }}>
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          <button className="nav-icon-btn" style={{ background: 'rgba(255,255,255,0.03)' }}>
+            <MessageSquare size={20} />
+          </button>
+          <button className="nav-icon-btn" style={{ background: 'rgba(255,255,255,0.03)' }}>
+            <Bell size={20} />
+          </button>
         </div>
-        TaskBoard
-      </div>
 
-      <div className="navbar-search">
-        <Search size={16} />
-        <input type="text" placeholder="Search..." />
-      </div>
+        <div style={{ 
+          background: 'rgba(255,255,255,0.03)', 
+          padding: '0.6rem 1.25rem', 
+          borderRadius: '12px', 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '0.75rem',
+          color: 'var(--text-muted)',
+          fontSize: '0.9rem'
+        }}>
+          <Calendar size={16} />
+          {formatDate()}
+        </div>
 
-      <div className="navbar-actions">
-        <button className="nav-icon-btn">
-          <FileText size={18} />
-        </button>
-        <button className="nav-icon-btn">
-          <Bell size={18} />
-        </button>
-        
-        <div style={{ position: 'relative' }}>
-          <div 
-            className="nav-avatar" 
-            onClick={() => setShowDropdown(!showDropdown)}
-          >
-            {getInitials(user?.name)}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontSize: '0.9rem', fontWeight: '600' }}>{user?.name || 'Elisabeth Beck'}</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Administrator</div>
           </div>
-
-          {showDropdown && (
-            <div className="glass-panel" style={{
-              position: 'absolute', top: '100%', right: 0, marginTop: '0.5rem',
-              padding: '0.5rem', zIndex: 10, display: 'flex', flexDirection: 'column', gap: '0.25rem',
-              minWidth: '150px'
-            }}>
-              <div style={{ padding: '0.5rem 0.75rem', borderBottom: '1px solid var(--glass-border)', marginBottom: '0.25rem' }}>
-                <div style={{ fontWeight: '600', fontSize: '0.9rem' }}>{user?.name || 'User'}</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{user?.email}</div>
-              </div>
-              <div 
-                className="nav-item" 
-                style={{ padding: '0.5rem 0.75rem', fontSize: '0.85rem', color: '#ef4444' }}
-                onClick={handleLogout}
-              >
-                <LogOut size={14} /> Logout
-              </div>
-            </div>
-          )}
+          <div className="nav-avatar" style={{ width: '40px', height: '40px', borderRadius: '12px' }}>
+            {user?.name?.substring(0, 2).toUpperCase() || 'EB'}
+          </div>
+          <ChevronDown size={16} color="var(--text-muted)" />
         </div>
       </div>
     </nav>
