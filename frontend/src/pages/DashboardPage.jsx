@@ -3,35 +3,72 @@ import {
   MoreHorizontal, Plus, ChevronRight, 
   TrendingUp, ArrowUpRight,
   Filter, SortAsc, Layout, List, Calendar as CalendarIcon,
-  ClipboardList, Users as UsersIcon
+  ClipboardList, Users as UsersIcon, Trash2
 } from 'lucide-react';
 import api from '../services/api';
 import AppointmentModal from '../components/AppointmentModal';
 
-const AppointmentCard = ({ name, time, date, status, desc }) => (
-  <div className="glass-panel" style={{ padding: '1.25rem', marginBottom: '1rem', border: '1px solid rgba(255,255,255,0.03)' }}>
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-      <div style={{ display: 'flex', gap: '1rem' }}>
-        <div style={{ background: 'rgba(255,255,255,0.03)', padding: '0.5rem', borderRadius: '10px', textAlign: 'center', minWidth: '60px' }}>
-          <div style={{ fontSize: '0.85rem', fontWeight: 'bold' }}>{date}</div>
-          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{time}</div>
+const AppointmentCard = ({ id, name, time, date, status, desc, onDelete }) => {
+  const [showMenu, setShowMenu] = useState(false);
+
+  return (
+    <div className="glass-panel" style={{ padding: '1.25rem', marginBottom: '1rem', border: '1px solid rgba(255,255,255,0.03)', position: 'relative' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          <div style={{ background: 'rgba(255,255,255,0.03)', padding: '0.5rem', borderRadius: '10px', textAlign: 'center', minWidth: '60px' }}>
+            <div style={{ fontSize: '0.85rem', fontWeight: 'bold' }}>{date}</div>
+            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{time}</div>
+          </div>
+          <div>
+            <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>{name}</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', maxWidth: '200px' }}>{desc}</div>
+          </div>
         </div>
-        <div>
-          <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>{name}</div>
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', maxWidth: '200px' }}>{desc}</div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.75rem' }}>
+          <div style={{ position: 'relative' }}>
+            <button 
+              onClick={() => setShowMenu(!showMenu)}
+              style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}
+            >
+              <MoreHorizontal size={18} />
+            </button>
+            {showMenu && (
+              <div 
+                className="glass-panel" 
+                style={{ 
+                  position: 'absolute', right: 0, top: '100%', zIndex: 10,
+                  minWidth: '120px', padding: '0.5rem', background: '#1a1d23',
+                  boxShadow: '0 10px 25px rgba(0,0,0,0.5)'
+                }}
+              >
+                <button 
+                  onClick={() => {
+                    onDelete(id);
+                    setShowMenu(false);
+                  }}
+                  style={{ 
+                    width: '100%', padding: '0.5rem', display: 'flex', alignItems: 'center', gap: '8px',
+                    background: 'transparent', border: 'none', color: '#EF4444', cursor: 'pointer',
+                    fontSize: '0.85rem', borderRadius: '6px'
+                  }}
+                  onMouseOver={e => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'}
+                  onMouseOut={e => e.currentTarget.style.background = 'transparent'}
+                >
+                  <Trash2 size={14} /> Delete
+                </button>
+              </div>
+            )}
+          </div>
+          <span style={{ 
+            background: status === 'Confirmed' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(234, 179, 8, 0.1)',
+            color: status === 'Confirmed' ? '#22C55E' : '#EAB308',
+            padding: '2px 10px', borderRadius: '20px', fontSize: '0.7rem', fontWeight: '600'
+          }}>{status}</span>
         </div>
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.75rem' }}>
-        <MoreHorizontal size={18} color="var(--text-muted)" />
-        <span style={{ 
-          background: status === 'Confirmed' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(234, 179, 8, 0.1)',
-          color: status === 'Confirmed' ? '#22C55E' : '#EAB308',
-          padding: '2px 10px', borderRadius: '20px', fontSize: '0.7rem', fontWeight: '600'
-        }}>{status}</span>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const StatCard = ({ title, value, change, icon: Icon, offset }) => (
   <div className="glass-panel animate-float" style={{ 
@@ -104,6 +141,17 @@ export default function DashboardPage() {
     }
   };
 
+  const handleDeleteAppointment = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this appointment?')) return;
+    try {
+      await api.delete(`/appointments/${id}`);
+      fetchAppointments();
+    } catch (err) {
+      console.error(err);
+      alert('Failed to delete appointment');
+    }
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr 240px', gap: '2rem', minHeight: '450px' }}>
@@ -126,11 +174,13 @@ export default function DashboardPage() {
             {appointments.map(apt => (
               <AppointmentCard 
                 key={apt.id}
+                id={apt.id}
                 name={apt.name} 
                 time={apt.time} 
                 date={apt.date} 
                 status={apt.status} 
                 desc={apt.description} 
+                onDelete={handleDeleteAppointment}
               />
             ))}
             {appointments.length === 0 && (

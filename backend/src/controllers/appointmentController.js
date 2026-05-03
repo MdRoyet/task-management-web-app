@@ -31,3 +31,18 @@ exports.getAppointments = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+exports.deleteAppointment = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await prisma.appointment.delete({
+      where: { 
+        id: parseInt(id),
+        userId: req.user.userId 
+      }
+    });
+    res.json({ message: 'Deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

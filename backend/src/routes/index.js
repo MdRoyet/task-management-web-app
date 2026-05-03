@@ -43,5 +43,6 @@ router.delete('/tasks/:id', authMiddleware, taskController.deleteTask);
 // Appointment Routes (Protected)
 router.post('/appointments', authMiddleware, appointmentController.createAppointment);
 router.get('/appointments', authMiddleware, appointmentController.getAppointments);
+router.delete('/appointments/:id', authMiddleware, appointmentController.deleteAppointment);
 
 module.exports = router;
