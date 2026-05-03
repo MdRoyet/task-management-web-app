@@ -38,11 +38,11 @@ function App() {
         />
         <Route 
           path="/" 
-          element={user ? <Layout><DashboardPage user={user} setUser={setUser} /></Layout> : <Navigate to="/login" />} 
+          element={user ? <Layout user={user} setUser={setUser}><DashboardPage user={user} setUser={setUser} /></Layout> : <Navigate to="/login" />} 
         />
         <Route 
           path="/board/:id" 
-          element={user ? <Layout><BoardPage /></Layout> : <Navigate to="/login" />} 
+          element={user ? <Layout user={user} setUser={setUser}><BoardPage /></Layout> : <Navigate to="/login" />} 
         />
       </Routes>
     </BrowserRouter>

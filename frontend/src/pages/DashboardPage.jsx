@@ -63,16 +63,6 @@ export default function DashboardPage({ user, setUser }) {
 
   return (
     <div className="container">
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
-        <div>
-          <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>Dashboard</h1>
-          <p style={{ color: 'var(--text-muted)' }}>Welcome back, {user?.name}!</p>
-        </div>
-        <button onClick={handleLogout} className="glass-btn" style={{ background: 'transparent', border: '1px solid var(--glass-border)' }}>
-          Logout
-        </button>
-      </header>
-
       <section className="glass-panel" style={{ padding: '2rem', marginBottom: '3rem' }}>
         <h2 style={{ marginBottom: '1rem' }}>Create New Project</h2>
         <form onSubmit={createProject} style={{ display: 'flex', gap: '1rem' }}>
