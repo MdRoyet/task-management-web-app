@@ -23,7 +23,7 @@ export default function Sidebar({ setUser }) {
 
   const navItems = [
     { icon: Home, label: 'Dashboard', path: '/dashboard' },
-    { icon: Users, label: 'Projects', path: '/' },
+    { icon: Users, label: 'Projects', path: '/projects' },
     { icon: ClipboardList, label: 'Tasks', path: '/tasks' },
     { icon: Calendar, label: 'Calendar', path: '/calendar' },
     { icon: BarChart2, label: 'Statistics', path: '/stats' },

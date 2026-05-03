@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
+import ProjectsPage from './pages/ProjectsPage';
 import BoardPage from './pages/BoardPage';
 import HomePage from './pages/HomePage';
 import Layout from './components/Layout';
@@ -44,6 +45,10 @@ function App() {
         <Route 
           path="/dashboard" 
           element={user ? <Layout user={user} setUser={setUser}><DashboardPage user={user} setUser={setUser} /></Layout> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path="/projects" 
+          element={user ? <Layout user={user} setUser={setUser}><ProjectsPage /></Layout> : <Navigate to="/login" />} 
         />
         <Route 
           path="/board/:id" 

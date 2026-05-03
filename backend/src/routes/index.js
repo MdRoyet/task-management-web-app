@@ -23,6 +23,7 @@ router.get('/auth/me', authMiddleware, authController.me);
 router.post('/workspaces', authMiddleware, workspaceController.createWorkspace);
 router.get('/workspaces', authMiddleware, workspaceController.getWorkspaces);
 router.put('/workspaces/:id', authMiddleware, workspaceController.updateWorkspace);
+router.delete('/workspaces/:id', authMiddleware, workspaceController.deleteWorkspace);
 router.get('/workspaces/:id/projects', authMiddleware, workspaceController.getWorkspaceProjects);
 
 // Time Routes
