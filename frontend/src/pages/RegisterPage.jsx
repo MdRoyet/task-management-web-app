@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-
 import { Hexagon, Mail, Lock, User, ArrowRight } from 'lucide-react';
 import api from '../services/api';
 
-export default function LoginPage({ setUser }) {
+export default function RegisterPage({ setUser }) {
   const [formData, setFormData] = useState({
     email: '',
-    password: ''
+    password: '',
+    name: ''
   });
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ export default function LoginPage({ setUser }) {
     e.preventDefault();
     setError('');
     try {
-      const res = await api.post('/auth/login', formData);
+      const res = await api.post('/auth/register', formData);
       setUser(res.data.user);
       navigate('/dashboard');
     } catch (err) {
@@ -43,10 +43,10 @@ export default function LoginPage({ setUser }) {
             <Hexagon size={32} color="white" fill="white" />
           </div>
           <h1 style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '0.5rem' }}>
-            Welcome Back
+            Join the Future
           </h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-            Enter your details to access your workspace
+            Create an account to start collaborating
           </p>
         </div>
 
@@ -61,6 +61,19 @@ export default function LoginPage({ setUser }) {
         )}
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          <div style={{ position: 'relative' }}>
+            <User size={18} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+            <input 
+              type="text" 
+              placeholder="Full Name" 
+              className="glass-input"
+              style={{ paddingLeft: '3rem' }}
+              value={formData.name}
+              onChange={e => setFormData({ ...formData, name: e.target.value })}
+              required
+            />
+          </div>
+          
           <div style={{ position: 'relative' }}>
             <Mail size={18} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
             <input 
@@ -91,17 +104,17 @@ export default function LoginPage({ setUser }) {
             marginTop: '1rem', height: '50px', fontSize: '1rem',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px'
           }}>
-            Sign In <ArrowRight size={20} />
+            Get Started <ArrowRight size={20} />
           </button>
         </form>
 
         <div style={{ textAlign: 'center', marginTop: '2rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-          New to TaskBoard? {' '}
+          Already have an account? {' '}
           <Link 
-            to="/register"
+            to="/login"
             style={{ color: 'var(--primary)', cursor: 'pointer', fontWeight: '700', textDecoration: 'none' }}
           >
-            Create account
+            Sign in
           </Link>
         </div>
       </div>

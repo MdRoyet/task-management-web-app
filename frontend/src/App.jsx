@@ -5,6 +5,8 @@ import DashboardPage from './pages/DashboardPage';
 import ProjectsPage from './pages/ProjectsPage';
 import BoardPage from './pages/BoardPage';
 import HomePage from './pages/HomePage';
+import RegisterPage from './pages/RegisterPage';
+
 import Layout from './components/Layout';
 import api from './services/api';
 
@@ -41,6 +43,10 @@ function App() {
         <Route 
           path="/login" 
           element={!user ? <LoginPage setUser={setUser} /> : <Navigate to="/dashboard" />} 
+        />
+        <Route 
+          path="/register" 
+          element={!user ? <RegisterPage setUser={setUser} /> : <Navigate to="/dashboard" />} 
         />
         <Route 
           path="/dashboard" 

@@ -33,7 +33,7 @@ export default function HomePage() {
         </div>
         <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
           <button onClick={() => navigate('/login')} style={{ background: 'transparent', border: 'none', fontWeight: '600', cursor: 'pointer' }}>Login</button>
-          <button onClick={() => navigate('/login')} style={{ background: '#000', color: '#fff', padding: '0.75rem 1.5rem', borderRadius: '50px', border: 'none', fontWeight: '600', cursor: 'pointer' }}>Get Started</button>
+          <button onClick={() => navigate('/register')} style={{ background: '#000', color: '#fff', padding: '0.75rem 1.5rem', borderRadius: '50px', border: 'none', fontWeight: '600', cursor: 'pointer' }}>Get Started</button>
         </div>
       </nav>
 
@@ -69,7 +69,10 @@ export default function HomePage() {
               placeholder="name@company.com" 
               style={{ flex: 1, border: 'none', padding: '0 2rem', outline: 'none', fontSize: '1rem' }} 
             />
-            <button style={{ background: '#1A1A1A', color: 'white', border: 'none', padding: '1rem 2rem', borderRadius: '100px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+            <button 
+              onClick={() => navigate('/register')}
+              style={{ background: '#1A1A1A', color: 'white', border: 'none', padding: '1rem 2rem', borderRadius: '100px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
+            >
               Get Started <ArrowRight size={18} />
             </button>
           </div>

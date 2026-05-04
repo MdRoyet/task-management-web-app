@@ -24,7 +24,19 @@ exports.register = async (req, res) => {
       }
     });
 
-    res.status(201).json({ message: 'User created successfully' });
+    const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1d' });
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 24 * 60 * 60 * 1000 // 1 day
+    });
+
+    res.status(201).json({ 
+      message: 'User created successfully', 
+      user: { id: user.id, email: user.email, name: user.name } 
+    });
   } catch (error) {
     console.error('Register error:', error);
     res.status(500).json({ message: 'Server error' });
